@@ -2,22 +2,22 @@
 # Total size: ~500 MB (vs 8.6 GB with sentence-transformers)
 
 # Core API (essential)
-fastapi==0.109.2
-uvicorn[standard]==0.27.1
-pydantic==2.6.1
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
 
 # LLM and RAG (required for recommendations)
-langchain==0.1.10
-langchain-openai==0.0.8
-langchain-community==0.0.24
-openai==1.12.0
+langchain>=0.1.10
+langchain-openai>=0.0.8
+langchain-community>=0.0.25
+openai>=1.12.0
 
 # Vector Store (lightweight)
-faiss-cpu==1.8.0
-numpy==1.26.4
+faiss-cpu>=1.8.0
+numpy>=1.24.0,<2.0.0
 
 # Configuration
-python-dotenv==1.0.1
+python-dotenv>=1.0.0
 
 # Note: sentence-transformers REMOVED (saves ~4 GB)
 # Embeddings are pre-computed in vector_store/shl_faiss/
