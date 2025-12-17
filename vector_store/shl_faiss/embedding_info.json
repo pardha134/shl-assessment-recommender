@@ -1,0 +1,5 @@
+{
+  "num_embeddings": 377,
+  "embedding_dimension": 384,
+  "model": "text-embedding-ada-002"
+}

@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Environment Variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data - Keep processed products but exclude raw HTML
+data/raw/*.html
+
+# Vector Store - Exclude large binary files (can be rebuilt)
+vector_store/shl_faiss/*.faiss
+vector_store/shl_faiss/*.npy
+# Keep metadata for reference
+# vector_store/shl_faiss/*.json
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Predictions - Keep submission file
+# predictions/*.csv
+!predictions/.gitkeep
+!predictions/Pardha_Saradhi_Thumma.csv
+
+# Kiro IDE
+.kiro/
