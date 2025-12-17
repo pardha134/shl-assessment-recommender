@@ -37,13 +37,15 @@ git push origin main
    - **Branch**: `main`
    - **Main file path**: `streamlit_app.py`
 3. Click **"Advanced settings"**
-4. Add **Secrets** (important!):
+4. **Python version**: 3.11
+5. **Requirements file**: `requirements-streamlit.txt` (IMPORTANT!)
+6. Add **Secrets** (important!):
    ```toml
    OPENAI_API_KEY = "your-openai-api-key-here"
    ```
    (Copy your key from `.env` file)
 
-5. Click **"Deploy!"**
+7. Click **"Deploy!"**
 
 ### Step 4: Wait for Deployment
 
