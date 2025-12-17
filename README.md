@@ -43,11 +43,17 @@ User Query → Query Embedding → Retriever → LLM → Recommendation
 - **Backend API**: FastAPI
 - **Web UI**: Streamlit
 
+## 🌐 Get Public URL (For Deployment/Demo)
+
+**Want a public URL to share?** See **`DEPLOYMENT_STATUS.md`** for:
+- ⚡ 2-minute option (Ngrok - temporary URL)
+- 🚀 10-minute option (Render - permanent URL)
+
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.9+ (3.11 recommended for deployment)
 - OpenAI API key (optional - system uses HuggingFace by default)
 
 ### Installation & Setup
@@ -161,22 +167,24 @@ python evaluation/generate_report.py
 
 ## Deployment
 
-### Option 1: Render (API)
-```bash
-# Procfile already configured
-# Set environment variables in Render dashboard
-# Deploy automatically from GitHub
-```
+### Quick Deploy (Choose One):
 
-### Option 2: HuggingFace Spaces (Web UI)
+**Option A: Instant Testing (2 minutes)**
 ```bash
-# Create Streamlit Space
-# Upload files
-# Configure OPENAI_API_KEY in secrets (optional)
-# Auto-deploys
-```
+# Start API
+python api/main.py
 
-See `docs/DEPLOYMENT.md` for detailed instructions.
+# In new terminal, expose with ngrok
+ngrok http 8000
+```
+Get temporary public URL immediately!
+
+**Option B: Permanent URL (10 minutes)**
+1. Push to GitHub
+2. Deploy on [Render](https://render.com) (free)
+3. Get permanent URL: `https://your-app.onrender.com`
+
+See `QUICK_DEPLOY.md` for step-by-step instructions.
 
 ## Documentation
 
