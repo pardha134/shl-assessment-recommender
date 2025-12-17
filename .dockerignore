@@ -1,0 +1,64 @@
+# Exclude unnecessary files to reduce image size
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation (not needed at runtime)
+*.md
+docs/
+DEPLOYMENT_*.md
+RAILWAY_*.md
+RENDER_*.md
+SIMPLE_*.md
+*.pdf
+
+# Development files
+.env.example
+requirements-full.txt
+requirements-dev.txt
+requirements-api.txt
+test_*.py
+*_test.py
+
+# Scraping/preprocessing (not needed at runtime)
+scraper/
+preprocessing/
+embeddings/build_embeddings.py
+data/raw/
+
+# Evaluation (not needed at runtime)
+evaluation/
+predictions/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large files not needed
+*.log
+*.csv
+*.xlsx
