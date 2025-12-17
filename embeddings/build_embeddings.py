@@ -52,6 +52,13 @@ class EmbeddingGenerator:
             self.model = SentenceTransformer(self.model_name)
             logger.info(f"Initialized HuggingFace embeddings with model: {self.model_name}")
         
+        except ImportError as e:
+            logger.error(f"sentence-transformers not installed: {e}")
+            logger.info("For embedding generation, install: pip install sentence-transformers")
+            raise ImportError(
+                "sentence-transformers is required for embedding generation. "
+                "Install with: pip install sentence-transformers"
+            )
         except Exception as e:
             logger.error(f"Failed to initialize HuggingFace model: {e}")
             raise

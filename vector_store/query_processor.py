@@ -22,16 +22,17 @@ class QueryProcessor:
         # Use HuggingFace by default due to API quota issues
         self.model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
         self.generator = None
-        self._initialize_generator()
+        # Lazy initialization - only create generator when needed
     
     def _initialize_generator(self):
-        """Initialize embedding generator."""
-        try:
-            self.generator = EmbeddingGenerator(self.model_name)
-            logger.info(f"Initialized query processor with model: {self.model_name}")
-        except Exception as e:
-            logger.error(f"Failed to initialize embedding generator: {e}")
-            raise
+        """Initialize embedding generator (lazy initialization)."""
+        if self.generator is None:
+            try:
+                self.generator = EmbeddingGenerator(self.model_name)
+                logger.info(f"Initialized query processor with model: {self.model_name}")
+            except Exception as e:
+                logger.error(f"Failed to initialize embedding generator: {e}")
+                raise
     
     def process_query(self, query_text):
         """
@@ -62,6 +63,9 @@ class QueryProcessor:
         Returns:
             np.ndarray: Query embedding vector
         """
+        # Initialize generator if not already done (lazy initialization)
+        self._initialize_generator()
+        
         # Process query
         processed_query = self.process_query(query_text)
         
