@@ -23,7 +23,8 @@ COPY api/ ./api/
 COPY rag/ ./rag/
 COPY vector_store/ ./vector_store/
 COPY config.py .
-COPY .env .
+
+# Note: .env is NOT copied - use environment variables from Railway/Render dashboard
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
