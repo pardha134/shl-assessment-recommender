@@ -16,9 +16,12 @@ openai>=1.12.0
 faiss-cpu>=1.8.0
 numpy>=1.24.0,<2.0.0
 
+# Embeddings (needed for query embedding generation)
+sentence-transformers>=2.3.0
+
 # Configuration
 python-dotenv>=1.0.0
 
-# Note: sentence-transformers REMOVED (saves ~4 GB)
-# Embeddings are pre-computed in vector_store/shl_faiss/
-# No runtime embedding generation needed
+# Note: sentence-transformers is required for generating query embeddings
+# Pre-computed embeddings are in vector_store/shl_faiss/
+# But we still need sentence-transformers for new queries
