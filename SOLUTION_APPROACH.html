@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHL Assessment Recommender - Solution Approach</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 24pt;
+            margin-top: 0;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 18pt;
+            margin-top: 25px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            font-size: 14pt;
+            margin-top: 15px;
+            page-break-after: avoid;
+        }
+        
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+            page-break-inside: avoid;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        strong {
+            color: #2c3e50;
+        }
+        
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        .header-info {
+            color: #7f8c8d;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            h2 {
+                page-break-before: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>SHL Assessment Recommender - Solution Approach</h1>
+    
+    <div class="header-info">
+        <p><strong>Author:</strong> Pardha Saradhi Thumma<br>
+        <strong>Date:</strong> December 18, 2024<br>
+        <strong>Project:</strong> GenAI-Powered SHL Assessment Recommendation System</p>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Executive Summary</h2>
+        <p>Developed an AI-powered recommendation system that analyzes hiring requirements and suggests relevant SHL assessments from a catalog of 377 products. The solution leverages Retrieval-Augmented Generation (RAG) architecture combining semantic search with Large Language Models to provide contextually relevant, explainable recommendations.</p>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Problem Statement</h2>
+        <p>Organizations struggle to identify appropriate SHL assessments from a large catalog when hiring for specific roles. The challenge requires:</p>
+        <ul>
+            <li>Understanding natural language job descriptions</li>
+            <li>Matching requirements to relevant assessments</li>
+            <li>Providing explainable recommendations</li>
+            <li>Delivering results through accessible interfaces (API and Web UI)</li>
+        </ul>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Solution Architecture</h2>
+        
+        <h3>1. Data Collection & Processing</h3>
+        <p><strong>Web Scraping Pipeline:</strong> Scraped 377 SHL assessment products from shl.com, extracting product names, descriptions, categories, test types, durations, target roles, and skills assessed. Implemented robust HTML parsing with BeautifulSoup4 and stored structured data in JSON format.</p>
+        
+        <p><strong>Text Preprocessing:</strong> Cleaned and normalized product descriptions, removed HTML artifacts, chunked long descriptions (max 512 tokens, 50-token overlap), and created embedding-ready text combining all relevant fields.</p>
+        
+        <h3>2. Vector Store Creation</h3>
+        <p><strong>Embedding Generation:</strong> Used <code>sentence-transformers/all-MiniLM-L6-v2</code> model (384 dimensions) to generate embeddings for all 377 products. Stored in FAISS vector index for efficient similarity search with pre-computed embeddings to optimize deployment.</p>
+        
+        <h3>3. RAG Pipeline Implementation</h3>
+        <p><strong>Retrieval Component:</strong> Query processing with normalization and embedding, semantic search using FAISS L2 distance similarity, top-K retrieval (configurable, default: 5), and metadata enrichment.</p>
+        
+        <p><strong>Generation Component:</strong> OpenAI GPT-3.5-turbo with temperature 0.3, structured prompt templates, and context injection of retrieved products.</p>
+        
+        <p><strong>Fallback Mechanism:</strong> Graceful degradation when LLM unavailable, returning similarity-based recommendations to maintain system availability.</p>
+        
+        <h3>4. API Development</h3>
+        <p><strong>FastAPI Backend:</strong> RESTful endpoints (<code>/health</code>, <code>/recommend</code>), request validation with Pydantic schemas, CORS middleware, and comprehensive error handling.</p>
+        
+        <h3>5. Web Interface</h3>
+        <p><strong>Streamlit Application:</strong> Interactive UI with query input, configurable recommendation count (1-10), caching for optimal performance, and detailed assessment cards with relevance scores.</p>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Technical Implementation</h2>
+        
+        <h3>Key Technologies</h3>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Technology</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>Web Scraping</td>
+                <td>BeautifulSoup4, Requests</td>
+                <td>Data collection</td>
+            </tr>
+            <tr>
+                <td>Embeddings</td>
+                <td>Sentence-Transformers</td>
+                <td>Semantic representation</td>
+            </tr>
+            <tr>
+                <td>Vector Store</td>
+                <td>FAISS</td>
+                <td>Fast similarity search</td>
+            </tr>
+            <tr>
+                <td>LLM</td>
+                <td>OpenAI GPT-3.5-turbo</td>
+                <td>Intelligent recommendations</td>
+            </tr>
+            <tr>
+                <td>Framework</td>
+                <td>LangChain</td>
+                <td>RAG orchestration</td>
+            </tr>
+            <tr>
+                <td>API</td>
+                <td>FastAPI</td>
+                <td>RESTful interface</td>
+            </tr>
+            <tr>
+                <td>Web UI</td>
+                <td>Streamlit</td>
+                <td>User interface</td>
+            </tr>
+            <tr>
+                <td>Deployment</td>
+                <td>Streamlit Cloud</td>
+                <td>Cloud hosting</td>
+            </tr>
+        </table>
+        
+        <h3>Performance Optimizations</h3>
+        <ol>
+            <li><strong>Pre-computed Embeddings:</strong> Generated offline to reduce runtime overhead</li>
+            <li><strong>Lazy Loading:</strong> Components initialized only when needed</li>
+            <li><strong>Caching:</strong> Streamlit resource caching for recommender instance</li>
+            <li><strong>Efficient Search:</strong> FAISS IndexFlatL2 for exact similarity search</li>
+            <li><strong>Batch Processing:</strong> Optimized embedding generation in batches</li>
+        </ol>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Results & Performance</h2>
+        
+        <h3>System Metrics</h3>
+        <ul>
+            <li><strong>Dataset Size:</strong> 377 SHL assessments</li>
+            <li><strong>Embedding Dimension:</strong> 384</li>
+            <li><strong>Vector Store Size:</strong> 1.3 MB</li>
+            <li><strong>Response Time:</strong> 2-3 seconds (first query), 1-2 seconds (subsequent)</li>
+            <li><strong>Memory Usage:</strong> ~300-500 MB (within Streamlit's 1GB limit)</li>
+        </ul>
+        
+        <h3>Recommendation Quality</h3>
+        <ul>
+            <li><strong>Semantic Understanding:</strong> Accurately interprets job requirements</li>
+            <li><strong>Relevance:</strong> Top-5 recommendations consistently relevant</li>
+            <li><strong>Explainability:</strong> LLM provides reasoning for each recommendation</li>
+            <li><strong>Fallback Reliability:</strong> Similarity-based results when LLM unavailable</li>
+        </ul>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Challenges & Solutions</h2>
+        
+        <table>
+            <tr>
+                <th>Challenge</th>
+                <th>Solution</th>
+            </tr>
+            <tr>
+                <td>Large Model Size (~4GB)</td>
+                <td>Used lightweight model (all-MiniLM-L6-v2, ~90MB) with pre-computed embeddings</td>
+            </tr>
+            <tr>
+                <td>Vector Store Deployment</td>
+                <td>Updated .gitignore to include vector store files; verified all files tracked in git</td>
+            </tr>
+            <tr>
+                <td>Dependency Management</td>
+                <td>Created separate requirements files for local vs. cloud deployment</td>
+            </tr>
+            <tr>
+                <td>API Key Security</td>
+                <td>Environment variables locally, Streamlit Secrets for cloud deployment</td>
+            </tr>
+            <tr>
+                <td>Import Errors</td>
+                <td>Implemented lazy initialization; ensured dependency in all requirements files</td>
+            </tr>
+        </table>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Key Features</h2>
+        <ol>
+            <li><strong>Natural Language Understanding:</strong> Processes free-form job descriptions</li>
+            <li><strong>Semantic Search:</strong> Goes beyond keyword matching</li>
+            <li><strong>Intelligent Ranking:</strong> LLM-powered relevance scoring</li>
+            <li><strong>Explainable AI:</strong> Provides reasoning for recommendations</li>
+            <li><strong>Dual Interface:</strong> Both API and web UI available</li>
+            <li><strong>Scalable Architecture:</strong> Modular design for easy extension</li>
+            <li><strong>Production-Ready:</strong> Error handling, logging, fallback mechanisms</li>
+        </ol>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Future Enhancements</h2>
+        <ol>
+            <li><strong>Fine-tuned Embeddings:</strong> Domain-specific embedding model for SHL assessments</li>
+            <li><strong>User Feedback Loop:</strong> Collect ratings to improve recommendations</li>
+            <li><strong>Multi-language Support:</strong> Extend to non-English job descriptions</li>
+            <li><strong>Advanced Filtering:</strong> Filter by duration, test type, difficulty level</li>
+            <li><strong>Batch Processing:</strong> Handle multiple job descriptions simultaneously</li>
+            <li><strong>Analytics Dashboard:</strong> Track usage patterns and recommendation effectiveness</li>
+        </ol>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Conclusion</h2>
+        <p>Successfully developed and deployed a production-ready AI-powered recommendation system that processes natural language hiring requirements, provides relevant and explainable SHL assessment recommendations, delivers results through both API and web interfaces, operates efficiently within cloud platform constraints, and maintains high availability with fallback mechanisms.</p>
+        
+        <p>The solution demonstrates effective application of modern AI techniques (RAG, semantic search, LLMs) to solve a real-world business problem, with careful attention to performance, scalability, and user experience.</p>
+    </div>
+    
+    <hr>
+    
+    <div class="section">
+        <h2>Repository & Deployment</h2>
+        <ul>
+            <li><strong>GitHub:</strong> https://github.com/pardha134/shl-assessment-recommender</li>
+            <li><strong>Live Demo:</strong> Deployed on Streamlit Cloud</li>
+            <li><strong>Documentation:</strong> Comprehensive guides for setup, testing, and deployment</li>
+            <li><strong>Code Quality:</strong> Modular, well-documented, production-ready</li>
+        </ul>
+        
+        <p><strong>Total Development Time:</strong> Iterative development with focus on quality and deployment readiness<br>
+        <strong>Lines of Code:</strong> ~2,000 (excluding documentation)<br>
+        <strong>Test Coverage:</strong> Comprehensive manual testing with multiple query scenarios</p>
+    </div>
+</body>
+</html>
